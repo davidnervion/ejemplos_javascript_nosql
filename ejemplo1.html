@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guardar en localStorage</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 10px; }
+        #listaUsuarios { margin-top: 20px; }
+    </style>
+</head>
+<body>
+<h2>Registro de usuarios</h2>
+
+<!-- Formulario -->
+<div class="form-group">
+    <input type="text" id="nombre" placeholder="Nombre">
+</div>
+<div class="form-group">
+    <input type="text" id="apellidos" placeholder="Apellidos">
+</div>
+<div class="form-group">
+    <input type="number" id="edad" placeholder="Edad">
+</div>
+<button onclick="guardarUsuario()">Guardar</button>
+<button onclick="mostrarUsuarios()">Mostrar todos</button>
+<button onclick="limpiarDatos()">Borrar todo</button>
+
+<!-- Lista de usuarios -->
+<div id="listaUsuarios"></div>
+
+<script>
+    // Función para guardar en localStorage
+    function guardarUsuario() {
+        // Obtener valores de los inputs
+        const nombre = document.getElementById('nombre').value;
+        const apellidos = document.getElementById('apellidos').value;
+        const edad = document.getElementById('edad').value;
+
+        // Validar campos
+        if (!nombre || !apellidos || !edad) {
+            alert('¡Completa todos los campos!');
+            return;
+        }
+
+        // Crear objeto usuario
+        const usuario = {
+            nombre: nombre,
+            apellidos: apellidos,
+            edad: parseInt(edad)
+        };
+
+        // Obtener datos existentes o crear array vacío
+        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+        // Añadir nuevo usuario
+        usuarios.push(usuario);
+
+        // Guardar en localStorage
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+        // Limpiar formulario
+        document.querySelectorAll('input').forEach(input => input.value = '');
+    }
+
+    // Función para mostrar usuarios almacenados
+    function mostrarUsuarios() {
+        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        const lista = document.getElementById('listaUsuarios');
+
+        // Crear HTML
+        let html = '<h3>Usuarios registrados:</h3>';
+
+        usuarios.forEach((usuario, index) => {
+            html += `
+                    <div>
+                        <strong>Usuario ${index + 1}:</strong>
+                        ${usuario.nombre} ${usuario.apellidos},
+                        ${usuario.edad} años
+                    </div>
+                `;
+        });
+
+        lista.innerHTML = html;
+    }
+
+    // Función para borrar todos los datos
+    function limpiarDatos() {
+        localStorage.removeItem('usuarios');
+        document.getElementById('listaUsuarios').innerHTML = '';
+    }
+</script>
+</body>
+</html>
